@@ -1,6 +1,8 @@
 package board.article.api;
 
+import board.article.dto.response.ArticlePageResponse;
 import board.article.dto.response.ArticleResponse;
+import board.article.entity.Article;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
@@ -66,6 +68,19 @@ public class ArticleApiTest {
                 .uri("/v1/articles/{articleId}", 207481357067378688L)
                 .retrieve()
                 .toBodilessEntity();
+    }
+
+    @Test
+    void readAllTest() {
+        ArticlePageResponse response = restClient.get()
+                .uri("v1/articles?boardId=1&page=50000&pageSize=30")
+                .retrieve()
+                .body(ArticlePageResponse.class);
+
+        System.out.println("response. = getArticleCount() = " + response.getArticleCount());
+        for (ArticleResponse article : response.getArticles()) {
+            System.out.println("articleId = " + article.getArticleId());
+        }
     }
 
     @Getter

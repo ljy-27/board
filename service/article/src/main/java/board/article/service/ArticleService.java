@@ -2,6 +2,7 @@ package board.article.service;
 
 import board.article.dto.request.ArticleCreateRequest;
 import board.article.dto.request.ArticleUpdateRequest;
+import board.article.dto.response.ArticlePageResponse;
 import board.article.dto.response.ArticleResponse;
 import board.article.entity.Article;
 import board.article.repository.ArticleRepository;
@@ -43,5 +44,15 @@ public class ArticleService {
 
     public void delete(Long articleId) {
         articleRepository.deleteById(articleId);
+    }
+
+    public ArticlePageResponse readAll(Long boardId, Long page, Long pageSize) {
+        return ArticlePageResponse.of(
+                articleRepository.findAll(boardId, (page - 1) * pageSize, pageSize).stream()
+                        .map(ArticleResponse::fromArticle)
+                        .toList(),
+                articleRepository.count(boardId,
+                        PageLimitCalculator.calculatePageLimit(page, pageSize, 10L))
+        );
     }
 }
