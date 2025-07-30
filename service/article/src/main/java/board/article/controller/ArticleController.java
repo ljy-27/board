@@ -6,7 +6,10 @@ import board.article.dto.response.ArticlePageResponse;
 import board.article.dto.response.ArticleResponse;
 import board.article.service.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +29,15 @@ public class ArticleController {
             @RequestParam("pageSize") Long pageSize
     ) {
         return articleService.readAll(boardId, page, pageSize);
+    }
+
+    @GetMapping("/v1/articles/infinite-scroll")
+    public List<ArticleResponse> readInfiniteScroll(
+            @RequestParam("boardId") Long boardId,
+            @RequestParam("pageSize") Long pageSize,
+            @RequestParam(value = "lastArticleId", required = false) Long lastArticleId
+    ) {
+        return articleService.readAllInfiniteScroll(boardId, pageSize, lastArticleId);
     }
 
     @PostMapping("/v1/articles")
